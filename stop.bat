@@ -2,27 +2,26 @@
 
 goto main
 
-
 :stop
 echo Stoping "%1 "
 VBoxManage controlvm %1 poweroff
 goto :eof
 
-
 :stop_secure
+set keyword=%1
 setlocal enabledelayedexpansion
 set example=
 for /f "tokens=1 delims= " %%n in ('VBoxManage list runningvms') do (
 	if "!example!" == "" (
 		set example=%%~n
 	)
-	if "%%~n" == "%1" (
-		call :stop %1
+	if "%%~n" == "%keyword%" (
+		call :stop %keyword%
 		exit /b 0
 	)
 )
 echo. >&2
-echo 虚拟机名称输入错误，例：%example%
+echo 虚拟机(!keyword!)未启动，例：%example%
 endlocal
 exit /b 8
 
@@ -57,8 +56,8 @@ endlocal
 
 :: 无参
 if "%1" == "" (
-	set /P keyword=输入虚拟机名称关闭：
-	call :stop_batch %keyword%
+	set /P input=输入虚拟机名称关闭：
+	call :stop_batch !input!
 	exit /b 0
 )
 
